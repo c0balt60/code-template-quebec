@@ -3,9 +3,9 @@ Write-Host "Sync mode: src" -ForegroundColor Cyan
 Start-Process -FilePath rojo.exe `
     -ArgumentList @(
     "sourcemap",
-    ".\default.project.json",
+    "default.project.json",
     "-o",
-    ".\sourcemap.json",
+    "sourcemap.json",
     "--watch"
 )`
     -NoNewWindow
@@ -16,14 +16,14 @@ Start-Process -FilePath darklua.exe `
     "--config",
     "./.darklua.json",
     "--watch",
-    "./src",
-    "./out"
+    "src",
+    "out"
 )`
     -NoNewWindow
 
 Start-Process -FilePath rojo.exe `
     -ArgumentList @(
     "serve",
-    ".\out.project.json"
+    ".\default.project.json"
 )`
     -NoNewWindow
