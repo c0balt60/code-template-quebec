@@ -1,0 +1,24 @@
+# Argon
+/sourcemap.json
+
+# Wally
+/Packages
+/ServerPackages
+/DevPackages
+
+# Artifacts
+/*.lock
+/*.rbxl
+/*.rbxlx
+/*.rbxm
+/*.rbxmx
+
+# Pesde
+.pesde
+luau_packages/
+lune_packages/
+roblox_packages/
+roblox_server_packages/
+
+# Misc
+.DS_Store

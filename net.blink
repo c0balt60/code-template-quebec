@@ -1,0 +1,9 @@
+option ClientOutput = "src/shared/net.luau"
+option ServerOutput = "src/server/net.luau"
+
+--[=[
+
+]=]
+scope Replication {
+
+}

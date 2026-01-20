@@ -1,0 +1,12 @@
+{
+  "aliases": {
+    "controllers": "src/client/controllers",
+    "services": "src/client/services",
+    "packages": "roblox_packages",
+    "server_packages": "roblox_server_packages",
+    "client-net": "src/shared/net",
+    "server-net": "src/server/net",
+    "config": "src/shared/config",
+    "quebec": "quebec/src"
+  }
+}
