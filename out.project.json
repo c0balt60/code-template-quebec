@@ -1,0 +1,25 @@
+{
+  "name": "code-template-quebec",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "shared": {
+        "$path": "out/shared"
+      },
+      "packages": {
+        "$path": "roblox_packages"
+      },
+      "quebec": {
+        "$path": "quebec/default.project.json"
+      }
+    },
+    "ServerScriptService": {
+      "$path": "out/server"
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "$path": "out/client"
+      }
+    }
+  }
+}

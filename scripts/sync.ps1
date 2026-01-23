@@ -24,6 +24,6 @@ Start-Process -FilePath darklua.exe `
 Start-Process -FilePath rojo.exe `
     -ArgumentList @(
     "serve",
-    ".\default.project.json"
+    ".\out.project.json"
 )`
     -NoNewWindow
