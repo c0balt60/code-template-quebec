@@ -2,7 +2,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 --[ Packages ]
-local quebec = require(ReplicatedStorage.quebec)
+local quebec = require("@quebec")
 
 --[ Controller ]
 local Controller = quebec.singleton({

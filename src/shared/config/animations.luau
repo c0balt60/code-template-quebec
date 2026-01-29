@@ -1,4 +1,4 @@
-return {
+local a = {
 	Run = "89032171787403",
 	Walk = "140456728718187",
 
@@ -11,3 +11,4 @@ return {
 		M3 = "124278164272108",
 	},
 }
+return a :: typeof(a) & { [string]: string | { [string]: string } }
