@@ -18,21 +18,27 @@ fusion = { wally = "elttob/fusion", version = "^0.2.0" }
 charm = { wally = "littensy/charm", version = "^0.10.0" }
 charm-sync = { wally = "littensy/charm-sync", version = "^0.3.0" }
 sift = { wally = "csqrl/sift", version = "^0.0.11" }
+immut = { wally = "solarhorizon/immut", version = "^0.4.4" }
 promise = { wally = "lukadev-0/typed-promise", version = "^4.0.2" }
 cmdr = { wally = "evaera/cmdr", version = "^1.12.0" }
-trove = { wally = "sleitnick/trove", version = "^1.8.0" }
+janitor = { wally = "1foreverhd/janitor", version = "^1.18.15" }
 profile-store = { wally = "vyon/profilestore", version = "^1.0.3" }
 topbarplus = { name = "dancodesrbx/topbarplus", version = "^3.0.2" }
-darklua = { name = "pesde/darklua", version = "^0.17.3", target = "lune" }
+fastcast = { wally = "megamonsta2/fastcast", version = "^1.0.0" }
+signal = { wally = "data-oriented-house/lemonsignal", version = "^1.11.0" }
 
 [scripts]
 roblox_sync_config_generator = ".pesde/scripts/roblox_sync_config_generator.luau"
 sourcemap_generator = ".pesde/scripts/sourcemap_generator.luau"
+prepare = ".lune/prepare.luau"
+sync = ".lune/sync.luau"
 
 [dev_dependencies]
 scripts = { name = "pesde/scripts_rojo", version = "^0.2.0", target = "lune" }
 rojo = { name = "pesde/rojo", version = "^7.5.1", target = "lune" }
+darklua = { name = "pesde/darklua", version = "^0.17.2", target = "lune" }
+uilabs = { name = "pepeeltoro41/ui_labs", version = "^2.4.2" }
 
 [engines]
 pesde = "^0.7.0"
-lune = "^0.10.2"
+lune = "^0.10.4"
