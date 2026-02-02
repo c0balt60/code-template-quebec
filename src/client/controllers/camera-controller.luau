@@ -1,5 +1,4 @@
 --!strict
-local EncodingService = game:GetService("EncodingService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -10,6 +9,14 @@ local quebec = require("@quebec")
 
 -- [ Constants ]
 local Player = Players.LocalPlayer :: Player
+local Camera = workspace.CurrentCamera
+
+-- Tilt
+local TiltConstant = 2
+local Frequency = 0.25
+local Amplitude = 0.1
+-- Lean
+local MaxTiltAngle = 10
 
 -- [ Import ]
 local CharacterController = require("@controllers/character-controller")
@@ -17,6 +24,7 @@ local CharacterController = require("@controllers/character-controller")
 --[ Controller ]
 local Controller = quebec.singleton({
 	lifecycles = {
+		"init",
 		"start",
 	},
 })
@@ -26,9 +34,22 @@ local Controller = quebec.singleton({
 --[ Types ]
 
 --[ Lifecycles ]
+function Controller.init(self: Controller)
+	-- vars
+	self.Rot = CFrame.new()
+	self.Tilt = CFrame.new()
+	self.Delta = 0
+end
 function Controller.start(self: Controller)
 	-- Bind camera to hrp
-	CharacterController.CharacterAdded:Connect(function()
+	CharacterController.CharacterAdded:Connect(function(character)
+		self._char = character
+
+		-- Decompose
+		self.RootPart = character.HumanoidRootPart :: BasePart
+		self.RootJoint = character.LowerTorso.Root :: Motor6D
+		self.RootC0 = self.RootJoint.C0
+
 		self:_bindCamera()
 	end)
 	CharacterController.CharacterRemoving:Connect(function()
@@ -62,7 +83,57 @@ function Controller._bindCamera(self: Controller)
 			(humanoidRoot.CFrame + Vector3.new(0, 1.5, 0)):PointToObjectSpace(head.CFrame.Position),
 			0.1 + dt
 		)
+
+		self:_cameraBob(dt)
+		self:_lean(dt)
 	end)
+end
+
+--[=[
+	@param dt number
+
+	Returns the roll dot product
+]=]
+function Controller._lean(self: Controller, delta: number)
+	-- Leaning
+	local MoveDirection = self.RootPart.CFrame:VectorToObjectSpace(self._char.Humanoid.MoveDirection)
+	self.Tilt = self.Tilt:Lerp(CFrame.Angles(0, 0, math.rad(-MoveDirection.X) * MaxTiltAngle), 0.2 ^ (1 / (delta * 60)))
+	self.RootJoint.C0 = self.RootC0 * self.Tilt
+end
+
+--[=[
+	returns the roll angle
+]=]
+function Controller._getRollAngle(self: Controller)
+	assert(self._char)
+	return -Camera.CFrame.RightVector:Dot(self._char.Humanoid.MoveDirection)
+end
+
+--[=[
+	rotate the camera
+]=]
+function Controller._cameraRotate(self: Controller)
+	local Roll = self:_getRollAngle() * TiltConstant
+	self.Rot = self.Rot:Lerp(CFrame.Angles(0, 0, math.rad(Roll)), 0.075)
+
+	Camera.CFrame *= self.Rot
+end
+
+--[=[
+	@param delta number
+
+	bob the camera
+]=]
+function Controller._cameraBob(self: Controller, delta: number)
+	self.Delta += delta
+	local humanoid = self._char.Humanoid
+
+	if not (humanoid.MoveDirection.Magnitude > 0) then
+		return
+	end
+
+	local verticalOffset = math.sin(self.Delta * Frequency * math.pi) * Amplitude
+	humanoid.CameraOffset = humanoid.CameraOffset:Lerp(Vector3.new(0, verticalOffset, 0), 0.5)
 end
 
 type Controller = typeof(Controller)
