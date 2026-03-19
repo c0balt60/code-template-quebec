@@ -1,9 +1,19 @@
 option ClientOutput = "src/shared/net.luau"
 option ServerOutput = "src/server/net.luau"
 
---[=[
+map Map<K, V> = {[K]: V}
 
-]=]
 scope Replication {
+    event init {
+        From: Client,
+        Type: Reliable,
+        Call: SingleAsync,
+    }
 
+    event sync {
+        From: Server,
+        Type: Reliable,
+        Call: SingleAsync,
+        Data: unknown
+    }
 }

@@ -17,8 +17,14 @@ default = "https://github.com/UpliftGames/wally-index"
 fusion = { wally = "elttob/fusion", version = "^0.2.0" }
 charm = { wally = "littensy/charm", version = "^0.10.0" }
 charm-sync = { wally = "littensy/charm-sync", version = "^0.3.0" }
+react-charm = { wally = "littensy/react-charm", version = "^0.3.0" }
 sift = { wally = "csqrl/sift", version = "^0.0.11" }
 immut = { wally = "solarhorizon/immut", version = "^0.4.4" }
+react = { wally = "haedrix/react", version = "^17.3.7" }
+react_roblox = { wally = "haedrix/react-roblox", version = "^17.3.7" }
+react_devtools_core = { wally = "haedrix/react-devtools-core", version = "^17.3.7" }
+react_globals = { wally = "haedrix/react-globals", version = "^17.3.7" }
+react_spring = { wally = "chriscerie/react-spring", version = "^2.0.0" }
 promise = { wally = "lukadev-0/typed-promise", version = "^4.0.2" }
 cmdr = { wally = "evaera/cmdr", version = "^1.12.0" }
 janitor = { wally = "1foreverhd/janitor", version = "^1.18.15" }
@@ -32,6 +38,7 @@ roblox_sync_config_generator = ".pesde/scripts/roblox_sync_config_generator.luau
 sourcemap_generator = ".pesde/scripts/sourcemap_generator.luau"
 prepare = ".lune/prepare.luau"
 sync = ".lune/sync.luau"
+blinkgen = ".lune/blinkgen.luau"
 
 [dev_dependencies]
 scripts = { name = "pesde/scripts_rojo", version = "^0.2.0", target = "lune" }

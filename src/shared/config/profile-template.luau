@@ -1,4 +1,6 @@
-return {
+local ProfileStore = require("@packages/profile-store")
+
+local TEMPLATE = {
 	Cash = 0,
 	Scrap = 0,
 
@@ -8,3 +10,8 @@ return {
 	Inventory = {},
 	Settings = {},
 }
+
+export type Template = typeof(TEMPLATE)
+export type Profile = ProfileStore.Profile<Template>
+
+return TEMPLATE

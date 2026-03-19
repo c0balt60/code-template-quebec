@@ -1,7 +1,7 @@
 --!strict
 --[ Services ]
 local Players = game:GetService("Players")
-local ServerScriptService = game:GetService("ServerScriptService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 --[ Packages ]
 local Quebec = require("@quebec")
@@ -11,6 +11,7 @@ local Net = require("@server-net")
 
 --[ Config ]
 local TEMPLATE = require("@config/profile-template")
+local datastore = require(ReplicatedStorage.shared.store.datastore)
 
 --[ Service ]
 local Service = Quebec.singleton({
@@ -27,8 +28,8 @@ local PlayerStore = ProfileStore.New("PlayerStore", TEMPLATE)
 local Leaderstats: { [Player]: { IntValue } } = {}
 
 --[ Types ]
-type ProfileData = typeof(TEMPLATE)
-type Profile = typeof(PlayerStore:StartSessionAsync("", {}))
+type ProfileData = TEMPLATE.Template
+type Profile = TEMPLATE.Profile
 
 --[ Private Functions ]
 
@@ -107,6 +108,9 @@ function Service.onPlayerAdded(self: Service, player: Player)
 		print(profile)
 
 		createLeaderstats(player)
+
+		-- Load player profile into atom
+		datastore.setPlayerData(`{player.UserId}`, profile)
 	end)
 end
 
