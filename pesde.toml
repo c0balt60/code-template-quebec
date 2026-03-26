@@ -46,6 +46,41 @@ rojo = { name = "pesde/rojo", version = "^7.5.1", target = "lune" }
 darklua = { name = "pesde/darklua", version = "^0.17.2", target = "lune" }
 uilabs = { name = "pepeeltoro41/ui_labs", version = "^2.4.2" }
 
+[overrides]
+# React overrides
+"react_reflex>React" = "react"
+"react_spring>React" = "react"
+"react_spring>ReactRoblox" = "react_roblox"
+"react_is>React" = "react"
+"react_error_boundary>React" = "react"
+"react_error_boundary>ReactRoblox" = "react_roblox"
+# roact_compat overrides
+# "roact_compat>React" = "react"
+# "roact_compat>react-roblox" = "react_roblox"
+# "roact_compat>react-reconciler" = "react_reconciler"
+# "roact_compat>scheduler" = "scheduler"
+# "roact_compat>shared" = "shared"
+# charm overrides
+"charm>React" = "react"
+"charm>ReactRoblox" = "react_roblox"
+# charm_sync overrides
+"charm_sync>React" = "react"
+"charm_sync>ReactRoblox" = "react_roblox"
+# ripple overrides
+"ripple>React" = "react"
+"ripple>ReactRoblox" = "react_roblox"
+
 [engines]
 pesde = "^0.7.0"
 lune = "^0.10.4"
+
+[patches]
+"wally#haedrix/react" = { "17.3.7 roblox" = "patches/wally#haedrix+react-17.3.7+roblox_rc_deviations.patch" }
+"wally#haedrix/scheduler" = { "17.3.7 roblox" = "patches/wally#haedrix+scheduler-17.3.7+roblox_error_bug.patch" }
+# "wally#yetanotherclown/planck-runservice" = { "0.2.0 roblox" = "patches/wally#yetanotherclown+planck-runservice-0.2.0+roblox_server_performance_bug_hack.patch" }
+# "wally#ukendio/jecs" = { "0.9.0 roblox" = "patches/wally#ukendio+jecs-0.9.0+roblox_latest_commit.patch" }
+# "wally#pepeeltoro41/jecs-utils" = { "1.4.0 roblox" = "patches/wally#pepeeltoro41+jecs-utils-1.4.0+roblox.patch" }
+"wally#haedrix/react-globals" = { "17.3.7 roblox" = "patches/wally#haedrix+react-globals-17.3.7+roblox_rc_react_globals.patch" }
+"wally#chriscerie/react-spring" = { "2.0.0 roblox" = "patches/wally#chriscerie+react-spring-2.0.0+roblox_use_haedrix_shared_types.patch" }
+# "wally#yetanotherclown/planck" = { "0.2.0 roblox" = "patches/wally#yetanotherclown+planck-0.2.0+roblox.patch" }
+# "wally#haedrix/react-reconciler" = { "17.3.7 roblox" = "patches/wally#haedrix+react-reconciler-17.3.7+roblox.patch" }

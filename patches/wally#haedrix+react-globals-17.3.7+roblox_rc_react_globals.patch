@@ -1,0 +1,53 @@
+diff --git a/src/init.lua b/src/init.lua
+index d7c3911..db742d9 100644
+--- a/src/init.lua
++++ b/src/init.lua
+@@ -1,3 +1,48 @@
+ local ReactGlobals = require(script["ReactGlobals.global"])
+ 
++-- RC DEVIATION: Setup ReactGlobals based on environment
++-- This ensures __DEV__ is set before any React modules initialize
++local RunService = game:GetService("RunService")
++local ReplicatedStorage = game:GetService("ReplicatedStorage")
++
++local isClient, isStudio = RunService:IsClient(), RunService:IsStudio()
++
++ReactGlobals.__USE_STATE_MEM_LEAK_PATCH__ = true
++
++if workspace:GetAttribute("__ENABLE_REACT_PROFILING__") then
++	ReactGlobals.__MICROPROFILER_LEVEL__ = 10
++end
++
++-- Can't run
++if isStudio and not workspace:GetAttribute("__DISABLE_REACT_GLOBALS__") then
++	ReactGlobals.__EXPERIMENTAL__ = true
++	ReactGlobals.__DEV__ = true
++end
++
++-- cant setup devtools on both server and client because
++-- they both try to connect to the same devtools, which causes it to break
++if isClient and isStudio and not workspace:GetAttribute("__DISABLE_REACT_DEVTOOLS__") then
++	ReactGlobals.__PROFILE__ = isStudio and true or nil
++
++	-- Delay devtools connection to avoid circular require
++	task.delay(1, function()
++		local ReactDevtoolsCore = require(ReplicatedStorage.Packages.react_devtools_core)
++
++		ReactDevtoolsCore.backend.connectToDevtools({
++			profileOnStart = false,
++		})
++	end)
++end
++-- _G.__REACT_YIELD_CHECK__ = RunService:IsStudio() and workspace:GetAttribute("__REACT_YIELD_CHECK__")
++-- _G.__DEV__ = RunService:IsStudio() and workspace:GetAttribute("__DEV__")
++-- -- if RunService:IsClient() and game.Players.LocalPlayer.UserId == 58456267 then
++-- --     _G.__YOLO__ = true
++-- --     _G.__WTF__ = true -- turn on if you want it to print scheduler tasks (useful if tasks start blocking for some reason)
++-- -- end
++-- _G.__REACT_MICROPROFILER_LEVEL__ = RunService:IsStudio() and 10 or 1
++-- _G.__PROFILE__ = RunService:IsStudio()
++-- _G.__EXPERIMENTAL__ = RunService:IsStudio()
++-- _G.__YOLO__ = true
++-- _G.__WTF__ = true -- turn on if you want it to print scheduler tasks (useful if tasks start blocking for some reason)
++
+ return ReactGlobals

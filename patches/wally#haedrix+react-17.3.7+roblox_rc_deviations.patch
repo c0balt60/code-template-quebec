@@ -1,0 +1,116 @@
+diff --git a/src/React.lua b/src/React.lua
+index 561100b..5fe7ab4 100644
+--- a/src/React.lua
++++ b/src/React.lua
+@@ -84,6 +84,111 @@ local cloneElement: cloneElementFn = if shouldValidate
+ 	then ReactElementValidator.cloneElementWithValidation :: cloneElementFn
+ 	else ReactElement.cloneElement :: cloneElementFn
+ 
++-- RC DEVIATION: wrap useState to fix memory leak issue
++-- Enable with ReactGlobals.__USE_STATE_MEM_LEAK_PATCH__ = true
++if ReactGlobals.__USE_STATE_MEM_LEAK_PATCH__ then
++	local rawUseState = ReactHooks.useState
++	local rawUseRef = ReactHooks.useRef
++	local rawUseMemo = ReactHooks.useMemo
++
++	local function normalEq(a, b)
++		return not (a == b)
++	end
++
++	ReactHooks.useState = function(value, changed)
++		changed = changed or normalEq
++
++		-- RC DEVIATION: support lazy initialization with a function
++		-- If value is a function, call it once on mount to get initial value
++		local initialValue = rawUseMemo(function()
++			if typeof(value) == "function" then
++				return value()
++			end
++			return value
++		end, {})
++
++		local state, setState = rawUseState(initialValue)
++		local currentRef = rawUseRef(initialValue)
++
++		-- Memoize the wrapped setState based on the original setState
++		local wrappedSetState = rawUseMemo(function()
++			return function(newValue)
++				if typeof(newValue) == "function" then
++					local new = newValue(currentRef.current)
++					if changed(new, currentRef.current) then
++						currentRef.current = new
++						setState(new)
++					end
++				else
++					if changed(newValue, currentRef.current) then
++						currentRef.current = newValue
++						setState(newValue)
++					end
++				end
++			end
++		end, { setState })
++
++		return state, wrappedSetState, currentRef
++	end
++end
++
++-- RC DEVIATION: wrap useEffect with yield detection
++-- In __DEV__ mode: errors if effect yields or returns invalid value
++-- Otherwise: warns if effect yields or returns invalid value
++do
++	local rawUseEffect = ReactHooks.useEffect
++
++	ReactHooks.useEffect = function(fn, deps)
++		local wrappedFn = function()
++			local done, ret
++
++			task.spawn(function()
++				ret = fn()
++				done = true
++			end)
++
++			if not done then
++				if ReactGlobals.__DEV__ then
++					warn("useEffect yielded! This is not allowed. " .. debug.info(fn, "sln"))
++				else
++					warn("useEffect call yielded!", debug.info(fn, "sln"))
++					local now = os.clock()
++					local start = now
++					local warned = false
++
++					while not done do
++						task.wait()
++						now = os.clock()
++						if now - start > 5 and not warned then
++							warned = true
++							warn("useEffect call yielded for over 5 seconds. Possible infinite yield?", debug.info(fn, "sln"))
++						end
++					end
++
++					warn(string.format("useEffect function finished after yielding for %.3f seconds", now - start), debug.info(fn, "sln"))
++				end
++			end
++
++			-- Validate return value
++			if ret ~= nil and typeof(ret) ~= "function" then
++				local message = string.format(
++					"useEffect returned %s instead of a function or nil: %s",
++					typeof(ret),
++					debug.info(fn, "sln")
++				)
++				if ReactGlobals.__DEV__ then
++					error(message)
++				else
++					warn(message)
++				end
++			end
++
++			return ret
++		end
++		return rawUseEffect(wrappedFn, deps)
++	end
++end
++
+ return {
+ 	Children = ReactChildren,
+ 	createMutableSource = createMutableSource,

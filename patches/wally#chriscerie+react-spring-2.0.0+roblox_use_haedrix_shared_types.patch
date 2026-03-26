@@ -1,0 +1,17 @@
+diff --git a/src/types/common.lua b/src/types/common.lua
+index 21f8b36..3c7d784 100644
+--- a/src/types/common.lua
++++ b/src/types/common.lua
+@@ -32,9 +32,8 @@ export type AnimationConfigs = {
+ 	bounce: number?,
+ }
+
+-export type ReactBinding = {
+-	getValue: (self: ReactBinding) -> any,
+-	map: <U>(self: ReactBinding, (any) -> any) -> any,
+-}
++local haedrix_shared = require(game:GetService("ReplicatedStorage").Packages[".pesde"]["haedrix_shared@17.3.7"]["shared"])
++
++export type ReactBinding = haedrix_shared.ReactBinding<any>
+
+ return {}

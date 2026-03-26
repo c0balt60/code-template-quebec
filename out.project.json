@@ -3,13 +3,13 @@
   "tree": {
     "$className": "DataModel",
     "ReplicatedStorage": {
-      "shared": {
+      "Shared": {
         "$path": "out/shared"
       },
-      "packages": {
+      "Packages": {
         "$path": "roblox_packages"
       },
-      "quebec": {
+      "Quebec": {
         "$path": "quebec/default.project.json"
       }
     },

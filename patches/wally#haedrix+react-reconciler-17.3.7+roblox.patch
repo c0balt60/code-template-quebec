@@ -1,0 +1,28 @@
+diff --git a/src/RobloxReactProfiling.lua b/src/RobloxReactProfiling.lua
+index 0dc0140..e6626b1 100644
+--- a/src/RobloxReactProfiling.lua
++++ b/src/RobloxReactProfiling.lua
+@@ -14,6 +14,7 @@
+ ]]
+ -- Targeted performance insights for Roblox Microprofiler
+ local Packages = script.Parent.Parent
++local ReactGlobals = require(Packages.ReactGlobals)
+ local getComponentName = require(Packages.Shared).getComponentName
+ local ReactWorkTags = require(script.Parent.ReactWorkTags)
+ 
+@@ -26,12 +27,9 @@ local LEVEL_ROOTS_LOG_ONLY = 1 -- Level 1: Roots for Logging only
+ local LEVEL_ROOTS = 5 -- Level 5: Roots + Commit time in Microprofiler
+ local LEVEL_FIBERS = 10 -- Level 10: Individual Fiber "units of work" in Microprofiler
+ 
+-local loadedFlag, ReactMicroprofilerLevel = pcall(function()
+-	return game:DefineFastInt("ReactMicroprofilerLevel5", 0)
+-end)
+-if not loadedFlag then
+-	ReactMicroprofilerLevel = 0
+-end
++-- RC DEVIATION: Use ReactGlobals instead of FastInt so it can be controlled locally
++-- Set ReactGlobals.__MICROPROFILER_LEVEL__ = 5 or 10 to enable profiling
++local ReactMicroprofilerLevel = ReactGlobals.__MICROPROFILER_LEVEL__ or 0
+ 
+ export type Marker = {
+ 	id: string,

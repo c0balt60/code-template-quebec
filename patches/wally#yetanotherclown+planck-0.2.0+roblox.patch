@@ -1,0 +1,46 @@
+diff --git a/src/Scheduler.luau b/src/Scheduler.luau
+index 039a604..4265e65 100644
+--- a/src/Scheduler.luau
++++ b/src/Scheduler.luau
+@@ -7,6 +7,8 @@ local utils = require(script.Parent.utils)
+ local hooks = require(script.Parent.hooks)
+ local conditions = require(script.Parent.conditions)
+ 
++local bench = require(game.ReplicatedStorage.shared.library.profiler)
++
+ local getSystem = utils.getSystem
+ local getSystemName = utils.getSystemName
+ 
+@@ -135,10 +137,17 @@ function Scheduler:runSystem(system)
+ 	local function systemCall()
+ 		local function noYield()
+ 			local success, err
++			local label = systemInfo.name or "planck_system"
+ 			coroutine.resume(self._thread, function()
+-				success, err = xpcall(system, function(e)
++				bench.mark(label)
++				debug.profilebegin(label)
++				success, err = xpcall(function()
++					return system(table.unpack(self._vargs))
++				end, function(e)
+ 					return debug.traceback(e)
+-				end, table.unpack(self._vargs))
++				end)
++				debug.profileend()
++				bench.done()
+ 			end)
+ 
+ 			if success == false then
+diff --git a/src/utils.luau b/src/utils.luau
+index 4750672..82561a9 100644
+--- a/src/utils.luau
++++ b/src/utils.luau
+@@ -23,7 +23,7 @@ end
+ 
+ local function getSystemName(system: any): string
+ 	local name = debug.info(system, "n")
+-	if not name or string.len(name) == 0 then
++	if not name or string.len(name) == 0 or name == "system" then
+ 		local source, line = debug.info(system, "sl")
+ 		name = `{source}:{line}`
+ 	end

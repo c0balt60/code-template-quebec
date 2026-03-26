@@ -8,6 +8,7 @@ scope Replication {
         From: Client,
         Type: Reliable,
         Call: SingleAsync,
+        Data: unknown
     }
 
     event sync {

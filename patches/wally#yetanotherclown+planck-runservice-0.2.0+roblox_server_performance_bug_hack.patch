@@ -1,0 +1,28 @@
+diff --git a/src/init.luau b/src/init.luau
+index 47dc9c3..50ee1aa 100644
+--- a/src/init.luau
++++ b/src/init.luau
+@@ -1,4 +1,14 @@
+ local RunService = game:GetService("RunService")
++local RunServiceFix = require(game.ReplicatedStorage.shared.library.SERVER_PERFORMANCE_ISSUE_FROM_RUN_SERVICE_ENGINE_BUG_TEMP_FIX)
++
++local EventSources = {
++	Heartbeat = RunServiceFix,
++	Stepped = RunServiceFix,
++	PreSimulation = RunServiceFix,
++	PostSimulation = RunServiceFix,
++	PreRender = RunService,
++	PreAnimation = RunService,
++}
+ 
+ local Planck = require(script.Parent.Planck)
+ 
+@@ -93,7 +103,7 @@ Plugin.__index = Plugin
+ 
+ function Plugin:build<U...>(scheduler: Scheduler<U...>)
+ 	for event, pipeline in pairs(Pipelines) do
+-		scheduler:insert(pipeline, RunService, event)
++		scheduler:insert(pipeline, EventSources[event], event)
+ 	end
+ 
+ 	local _scheduler = scheduler :: any

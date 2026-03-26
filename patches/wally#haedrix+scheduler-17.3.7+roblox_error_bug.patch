@@ -1,0 +1,14 @@
+diff --git a/src/forks/SchedulerHostConfig.default.lua b/src/forks/SchedulerHostConfig.default.lua
+index 4e36fe8..a6e45be 100644
+--- a/src/forks/SchedulerHostConfig.default.lua
++++ b/src/forks/SchedulerHostConfig.default.lua
+@@ -313,7 +313,8 @@ local function wrapPerformWorkWithCoroutine(performWork)
+ 		local _, ok, result = coroutine.resume(co)
+ 		-- Propogate errors from `co` so that it always stays alive
+ 		if not ok then
+-			error(result)
++			-- RC DEVIATION: fix bug where errors are not converted to strings
++			error(if typeof(result) == "string" then result else errorToString(result :: any))
+ 		end
+ 	end
+ end
